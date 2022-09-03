@@ -38,6 +38,7 @@
 #include "utils.h"
 #include "libevent-compat.h"
 
+struct event_base* global_evbase;
 
 #define REDSOCKS_RELAY_HALFBUFF  4096
 

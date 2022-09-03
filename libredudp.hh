@@ -1,8 +1,6 @@
 #ifndef LIBREDUDP_H
 #define LIBREDUDP_H
 
-struct event_base* global_evbase;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

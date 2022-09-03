@@ -527,6 +527,7 @@ static void redudp_first_pkt_from_client(redudp_instance *self, struct sockaddr_
 	if (destaddr)
 		memcpy(&client->destaddr, destaddr, sizeof(client->destaddr));
 	evtimer_set(&client->timeout, redudp_timeout, client);
+    event_base_set(global_evbase, &client->timeout);
 	// XXX: self->relay_ss->init(client);
 
 	client->sender_fd = -1; // it's postponed until socks-server replies to avoid trivial DoS

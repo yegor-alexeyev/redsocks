@@ -197,7 +197,12 @@ struct bufferevent* red_connect_relay(struct sockaddr_in *addr, evbuffercb write
 		goto fail;
 	}
 
-	retval = bufferevent_new(relay_fd, NULL, writecb, errorcb, cbarg);
+	/* retval = bufferevent_new(relay_fd, NULL, writecb, errorcb, cbarg); */
+    retval = bufferevent_socket_new(global_evbase, relay_fd, 0);
+    bufferevent_setcb(retval, NULL, writecb, errorcb, cbarg);
+
+
+    /* buffered_event_base_set(global_evbase, retval); */
 	if (!retval) {
 		log_errno(LOG_ERR, "bufferevent_new");
 		goto fail;
