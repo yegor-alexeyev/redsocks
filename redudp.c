@@ -34,6 +34,7 @@
 #include "redudp.h"
 #include "libc-compat.h"
 
+
 #define redudp_log_error(client, prio, msg...) \
 	redsocks_log_write_plain(__FILE__, __LINE__, __func__, 0, &(client)->clientaddr, get_destaddr(client), prio, ## msg)
 #define redudp_log_errno(client, prio, msg...) \
@@ -368,6 +369,7 @@ static void redudp_read_assoc_reply(struct bufferevent *buffev, void *_arg)
 	}
 
 	event_set(&client->udprelay, fd, EV_READ | EV_PERSIST, redudp_pkt_from_socks, client);
+    event_base_set(global_evbase, &client->udprelay);
 	error = event_add(&client->udprelay, NULL);
 	if (error) {
 		redudp_log_errno(client, LOG_ERR, "event_add");
@@ -792,6 +794,7 @@ static int redudp_init_instance(redudp_instance *instance)
 	}
 
 	event_set(&instance->listener, fd, EV_READ | EV_PERSIST, redudp_pkt_from_client, instance);
+    event_base_set(global_evbase, &instance->listener);
 	error = event_add(&instance->listener, NULL);
 	if (error) {
 		log_errno(LOG_ERR, "event_add");
@@ -882,6 +885,9 @@ app_subsys redudp_subsys =
 	.fini = redudp_fini,
 	.conf_section = &redudp_conf_section,
 };
+
+
+#include "libredudp.cc"
 
 /* vim:set tabstop=4 softtabstop=4 shiftwidth=4: */
 /* vim:set foldmethod=marker foldlevel=32 foldmarker={,}: */

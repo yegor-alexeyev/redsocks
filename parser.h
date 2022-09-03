@@ -16,6 +16,8 @@ enum on_proxy_fail_e {
 	ONFAIL_FORWARD_HTTP_ERR,
 };
 
+int ext_vp_in_addr(void *addr, const char *token);
+
 typedef enum {
 	pt_bool,      // "bool" from stdbool.h, not "_Bool" or anything else
 	pt_pchar,

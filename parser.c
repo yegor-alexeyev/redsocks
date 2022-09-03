@@ -381,15 +381,23 @@ static int vp_in_addr(parser_context *context, void *addr, const char *token)
 			freeaddrinfo(ainfo);
 		}
 		else {
-			if (err == EAI_SYSTEM)
-				parser_error(context, "unable to resolve %s, error %d (%s)", token, errno, strerror(errno));
-			else
-				parser_error(context, "unable to resolve %s, getaddrinfo error %d (%s)", token, err, gai_strerror(err));
+            if (context != NULL) {
+                if (err == EAI_SYSTEM)
+                    parser_error(context, "unable to resolve %s, error %d (%s)", token, errno, strerror(errno));
+                else
+                    parser_error(context, "unable to resolve %s, getaddrinfo error %d (%s)", token, err, gai_strerror(err));
+            }
 			return -1;
 		}
 	}
 	return 0;
 }
+
+int ext_vp_in_addr(void *addr, const char *token)
+{
+    return vp_in_addr(NULL, addr, token);
+}
+
 
 static int vp_in_addr2(parser_context *context, void *addr, const char *token)
 {

@@ -324,7 +324,7 @@ static parser_entry base_entries[] =
 static int base_onenter(parser_section *section)
 {
 	if (instance.configured) {
-		parser_error(section->context, "only one instance of base is valid");
+		fprintf(stderr, "only one instance of base is valid\n");
 		return -1;
 	}
 	memset(&instance, 0, sizeof(instance));
@@ -337,9 +337,11 @@ static int base_onenter(parser_section *section)
 static int base_onexit(parser_section *section)
 {
 	if (!instance.max_accept_backoff_ms) {
-		parser_error(section->context, "`max_accept_backoff` must be positive, 0 ms is too low");
+		fprintf(stderr,"`max_accept_backoff` must be positive, 0 ms is too low\n");
 		return -1;
 	}
+
+    instance.redirector_name = strdup("iptables");
 
 	if (instance.redirector_name) {
 		redirector_subsys *ss;
@@ -351,12 +353,12 @@ static int base_onexit(parser_section *section)
 			}
 		}
 		if (!instance.redirector) {
-			parser_error(section->context, "invalid `redirector` set <%s>", instance.redirector_name);
+			fprintf(stderr,"invalid `redirector` set <%s>\n", instance.redirector_name);
 			return -1;
 		}
 	}
 	else {
-		parser_error(section->context, "no `redirector` set");
+		fprintf(stderr,"no `redirector` set\n");
 		return -1;
 	}
 
@@ -381,6 +383,8 @@ static int base_init()
 	uid_t uid = -1;
 	gid_t gid = -1;
 	int devnull = -1;
+    base_onenter(NULL);
+    base_onexit(NULL);
 
 	if (!instance.configured) {
 		log_error(LOG_ERR, "there is no configured instance of `base`, check config file");
@@ -410,8 +414,8 @@ static int base_init()
 
 	if (log_preopen(
 			instance.log_name ? instance.log_name : instance.daemon ? "syslog:daemon" : "stderr",
-			instance.log_debug,
-			instance.log_info
+			true,
+			true
 	) < 0 ) {
 		goto fail;
 	}

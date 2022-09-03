@@ -1442,7 +1442,6 @@ static void redsocks_fini_instance(redsocks_instance *instance) {
 
 static int redsocks_fini();
 
-static struct event debug_dumper;
 
 static int redsocks_init() {
 	struct sigaction sa = { }, sa_old = { };
@@ -1457,11 +1456,6 @@ static int redsocks_init() {
 		return -1;
 	}
 
-	signal_set(&debug_dumper, SIGUSR1, redsocks_debug_dump, NULL);
-	if (signal_add(&debug_dumper, NULL) != 0) {
-		log_errno(LOG_ERR, "signal_add");
-		goto fail;
-	}
 
 	event_set(&accept_backoff_ev, -1, 0, redsocks_accept_backoff, NULL);
 
@@ -1489,12 +1483,6 @@ static int redsocks_fini()
 		redsocks_fini_instance(instance);
 
 	assert(redsocks_conn == 0);
-
-	if (signal_initialized(&debug_dumper)) {
-		if (signal_del(&debug_dumper) != 0)
-			log_errno(LOG_WARNING, "signal_del");
-		memset(&debug_dumper, 0, sizeof(debug_dumper));
-	}
 
 	return 0;
 }
