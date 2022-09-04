@@ -802,6 +802,14 @@ static int redudp_init_instance(redudp_instance *instance)
 		goto fail;
 	}
 
+    socklen_t addr_len = sizeof(instance->config.bindaddr);
+    error = getsockname(fd, (struct sockaddr *)&instance->config.bindaddr, &addr_len);
+
+	if (error || addr_len != sizeof(instance->config.bindaddr)) {
+		log_errno(LOG_ERR, "getsockname");
+		goto fail;
+	}
+
 	return 0;
 
 fail:

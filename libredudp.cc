@@ -115,7 +115,6 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
         fprintf(stderr, "create_udp_relay: Not enough memory \n");
 		return -1;
 	}
-    uint16_t bindport = 10053;
 
 	INIT_LIST_HEAD(&instance->list);
 	INIT_LIST_HEAD(&instance->clients);
@@ -123,11 +122,11 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 
 	instance->config.bindaddr.sin_family = AF_INET;
     ext_vp_in_addr(&instance->config.bindaddr.sin_addr, "127.0.0.1");
-    instance->config.bindaddr.sin_port = bindport;
+    instance->config.bindaddr.sin_port = 0;
 	instance->config.bindaddr.sin_port = htons(instance->config.bindaddr.sin_port);
 
 	instance->config.relayaddr.sin_family = AF_INET;
-    ext_vp_in_addr(&instance->config.relayaddr.sin_addr, proxy.endpoint.ip);
+    ext_vp_in_addr(&instance->config.relayaddr.sin_addr, proxy.endpoint.host);
     instance->config.relayaddr.sin_port = proxy.endpoint.port;
     
     instance->config.login = strdup(proxy.login);
@@ -136,7 +135,7 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 	instance->config.relayaddr.sin_port = htons(instance->config.relayaddr.sin_port);
 
 	instance->config.destaddr.sin_family = AF_INET;
-    ext_vp_in_addr(&instance->config.destaddr.sin_addr, destination.ip);
+    ext_vp_in_addr(&instance->config.destaddr.sin_addr, destination.host);
     instance->config.destaddr.sin_port = destination.port;
 	instance->config.destaddr.sin_port = htons(instance->config.destaddr.sin_port);
 
@@ -148,5 +147,5 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 
     redudp_init_instance(instance);
 
-    return bindport;
+    return ntohs(instance->config.bindaddr.sin_port);
 }

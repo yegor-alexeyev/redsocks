@@ -8,7 +8,7 @@ extern "C" {
 
 typedef struct
 {
-  const char* ip;
+  const char* host;
   uint16_t port;
 } endpoint_t;
 
