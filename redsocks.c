@@ -1385,6 +1385,7 @@ static int redsocks_init_instance(redsocks_instance *instance)
 	}
 
 	event_set(&instance->listener, fd, EV_READ | EV_PERSIST, redsocks_accept_client, instance);
+    event_base_set(global_evbase, &instance->listener);
 	fd = -1;
 
 	error = event_add(&instance->listener, NULL);
@@ -1459,6 +1460,7 @@ static int redsocks_init() {
 
 
 	event_set(&accept_backoff_ev, -1, 0, redsocks_accept_backoff, NULL);
+    event_base_set(global_evbase, &accept_backoff_ev);
 
 	list_for_each_entry_safe(instance, tmp, &instances, list) {
 		if (redsocks_init_instance(instance) != 0)
