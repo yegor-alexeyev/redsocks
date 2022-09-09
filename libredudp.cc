@@ -121,7 +121,7 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 
 
 	instance->config.bindaddr.sin_family = AF_INET;
-    ext_vp_in_addr(&instance->config.bindaddr.sin_addr, "127.0.0.1");
+    ext_vp_in_addr(&instance->config.bindaddr.sin_addr, "0.0.0.0");
     instance->config.bindaddr.sin_port = 0;
 	instance->config.bindaddr.sin_port = htons(instance->config.bindaddr.sin_port);
 
