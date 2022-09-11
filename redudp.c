@@ -497,10 +497,17 @@ fail:
 
 static void redudp_relay_error(struct bufferevent *buffev, short what, void *_arg)
 {
-	redudp_client *client = _arg;
+    redudp_instance * instance = _arg;
 	// TODO: FIXME: Implement me
-	redudp_log_error(client, LOG_NOTICE, "redudp_relay_error");
-	redudp_drop_client(client);
+	log_error(LOG_NOTICE, "redudp_relay_error");
+    if (instance)
+    {
+      redudp_fini_instance(instance);
+    }
+    else
+    {
+      log_error(LOG_WARNING, "redudp_relay_error: instance is null");
+    }
 }
 
 static void redudp_timeout(int fd, short what, void *_arg)
@@ -533,7 +540,7 @@ static void redudp_first_pkt_from_client(redudp_instance *self, struct sockaddr_
 	client->sender_fd = -1; // it's postponed until socks-server replies to avoid trivial DoS
 
 	client->relay = red_connect_relay(&client->instance->config.relayaddr,
-	                                  redudp_relay_connected, redudp_relay_error, client);
+	                                  redudp_relay_connected, redudp_relay_error, self);
 	if (!client->relay)
 		goto fail;
 

@@ -199,8 +199,11 @@ struct bufferevent* red_connect_relay(struct sockaddr_in *addr, evbuffercb write
 
 	/* retval = bufferevent_new(relay_fd, NULL, writecb, errorcb, cbarg); */
     retval = bufferevent_socket_new(global_evbase, relay_fd, 0);
-    bufferevent_setcb(retval, NULL, writecb, errorcb, cbarg);
 
+    struct timeval tv = {5, 0};
+    bufferevent_set_timeouts(retval, NULL, &tv);
+
+    bufferevent_setcb(retval, NULL, writecb, errorcb, cbarg);
 
     /* buffered_event_base_set(global_evbase, retval); */
 	if (!retval) {
