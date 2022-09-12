@@ -82,7 +82,7 @@ static void syslog_msg(const char *file, int line, const char *func, int priorit
 static log_func log_msg = stderr_msg;
 static log_func log_msg_next = NULL;
 static bool should_log_info = true;
-static bool should_log_debug = false;
+static bool should_log_debug = true;
 
 bool should_log(int priority)
 {
