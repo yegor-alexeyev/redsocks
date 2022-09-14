@@ -140,8 +140,8 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 	instance->config.destaddr.sin_port = htons(instance->config.destaddr.sin_port);
 
 	instance->config.max_pktqueue = 5;
-	instance->config.udp_timeout = 30;
-	instance->config.udp_timeout_stream = 180;
+	instance->config.udp_timeout = 3000;
+	instance->config.udp_timeout_stream = 3000;
 
 	list_add(&instance->list, &instances);
 
