@@ -714,8 +714,8 @@ static int redudp_onenter(parser_section *section)
 	instance->config.relayaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	instance->config.destaddr.sin_family = AF_INET;
 	instance->config.max_pktqueue = 5;
-	instance->config.udp_timeout = 30;
-	instance->config.udp_timeout_stream = 180;
+	instance->config.udp_timeout = 600*2;
+	instance->config.udp_timeout_stream = 600*2;
 
 	for (parser_entry *entry = &section->entries[0]; entry->key; entry++)
 		entry->addr =
@@ -839,6 +839,8 @@ fail:
  */
 static void redudp_fini_instance(redudp_instance *instance)
 {
+    instance->config.shutdown_callback(ntohs(instance->config.bindaddr.sin_port));
+
 	if (!list_empty(&instance->clients)) {
 		redudp_client *tmp, *client = NULL;
 

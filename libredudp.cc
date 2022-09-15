@@ -108,7 +108,7 @@ int init_libredudp(struct event_base* evbase)
 	/* return !error ? EXIT_SUCCESS : EXIT_FAILURE; */
 }
 
-uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
+uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback)
 {
 	redudp_instance *instance = calloc(1, sizeof(*instance));
 	if (!instance) {
@@ -119,6 +119,8 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 	INIT_LIST_HEAD(&instance->list);
 	INIT_LIST_HEAD(&instance->clients);
 
+
+	instance->config.shutdown_callback = shutdown_callback;
 
 	instance->config.bindaddr.sin_family = AF_INET;
     ext_vp_in_addr(&instance->config.bindaddr.sin_addr, "0.0.0.0");
@@ -140,8 +142,8 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination)
 	instance->config.destaddr.sin_port = htons(instance->config.destaddr.sin_port);
 
 	instance->config.max_pktqueue = 5;
-	instance->config.udp_timeout = 3000;
-	instance->config.udp_timeout_stream = 3000;
+	instance->config.udp_timeout = 30;
+	instance->config.udp_timeout_stream = 180;
 
 	list_add(&instance->list, &instances);
 

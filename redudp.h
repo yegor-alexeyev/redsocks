@@ -1,6 +1,8 @@
 #ifndef REDUDP_H
 #define REDUDP_H
 
+typedef void (*relay_shutdown_callback_t)(uint16_t);
+
 typedef struct redudp_config_t {
 	struct sockaddr_in bindaddr;
 	struct sockaddr_in relayaddr;
@@ -11,6 +13,8 @@ typedef struct redudp_config_t {
 	uint16_t max_pktqueue;
 	uint16_t udp_timeout;
 	uint16_t udp_timeout_stream;
+    relay_shutdown_callback_t shutdown_callback;
+    
 } redudp_config;
 
 typedef struct redudp_instance_t {
