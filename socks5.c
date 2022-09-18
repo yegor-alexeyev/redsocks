@@ -206,10 +206,11 @@ static void socks5_read_auth_methods(struct bufferevent *buffev, redsocks_client
 
 	error = socks5_is_known_auth_method(&reply, socks5->do_password);
 	if (error) {
-		redsocks_log_error(client, LOG_NOTICE, "socks5_is_known_auth_method: %s", error);
-		redsocks_drop_client(client);
+		redsocks_log_error(client, LOG_NOTICE, "socks5_is_known_auth_method: %s, expected: %d, received: %d IGNORING", error, socks5_ver, reply.ver);
+		/* redsocks_drop_client(client); */
 	}
-	else if (reply.method == socks5_auth_none) {
+
+	if (reply.method == socks5_auth_none) {
 		redsocks_write_helper(
 			buffev, client,
 			socks5_mkconnect, socks5_request_sent, sizeof(socks5_reply)
