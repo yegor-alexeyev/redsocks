@@ -38,7 +38,7 @@
 #include "utils.h"
 #include "libevent-compat.h"
 
-struct event_base* global_evbase;
+/* struct event_base* global_evbase; */
 
 #define REDSOCKS_RELAY_HALFBUFF  4096
 
@@ -971,12 +971,15 @@ fail:
 
 void redsocks_connect_relay(redsocks_client *client)
 {
+  /*
 	client->relay = red_connect_relay(&client->instance->config.relayaddr,
 			                          redsocks_relay_connected, redsocks_event_error, client);
 	if (!client->relay) {
 		redsocks_log_errno(client, LOG_ERR, "red_connect_relay");
 		redsocks_drop_client(client);
 	}
+    */
+    exit(1);
 }
 
 static struct timeval drop_idle_connections()
@@ -1089,7 +1092,7 @@ static void redsocks_accept_backoff(int fd, short what, void *_null)
 void redsocks_close_internal(int fd, const char* file, int line, const char *func)
 {
 	if (close(fd) == 0) {
-		conn_pressure_lowered();
+		/* conn_pressure_lowered(); */
 	}
 	else {
 		const int do_errno = 1;
@@ -1385,7 +1388,7 @@ static int redsocks_init_instance(redsocks_instance *instance)
 	}
 
 	event_set(&instance->listener, fd, EV_READ | EV_PERSIST, redsocks_accept_client, instance);
-    event_base_set(global_evbase, &instance->listener);
+    /* event_base_set(global_evbase, &instance->listener); */
 	fd = -1;
 
 	error = event_add(&instance->listener, NULL);
@@ -1460,7 +1463,7 @@ static int redsocks_init() {
 
 
 	event_set(&accept_backoff_ev, -1, 0, redsocks_accept_backoff, NULL);
-    event_base_set(global_evbase, &accept_backoff_ev);
+    /* event_base_set(global_evbase, &accept_backoff_ev); */
 
 	list_for_each_entry_safe(instance, tmp, &instances, list) {
 		if (redsocks_init_instance(instance) != 0)

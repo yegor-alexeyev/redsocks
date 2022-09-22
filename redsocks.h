@@ -8,7 +8,7 @@
 #include "list.h"
 #include "parser.h"
 
-extern struct event_base* global_evbase;
+/* extern struct event_base* global_evbase; */
 
 struct redsocks_client_t;
 struct redsocks_instance_t;

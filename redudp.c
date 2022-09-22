@@ -129,7 +129,7 @@ static int bound_udp4_get(const struct sockaddr_in *addr)
 fail:
 	if (node) {
 		if (node->fd != -1)
-			redsocks_close(node->fd);
+			close(node->fd);
 		free(node);
 	}
 	return -1;
@@ -369,7 +369,7 @@ static void redudp_read_assoc_reply(struct bufferevent *buffev, void *_arg)
 	}
 
 	event_set(&client->udprelay, fd, EV_READ | EV_PERSIST, redudp_pkt_from_socks, client);
-    event_base_set(global_evbase, &client->udprelay);
+    event_base_set(client->instance->evbase, &client->udprelay);
 	error = event_add(&client->udprelay, NULL);
 	if (error) {
 		redudp_log_errno(client, LOG_ERR, "event_add");
@@ -539,12 +539,12 @@ static void redudp_first_pkt_from_client(redudp_instance *self, struct sockaddr_
 	if (destaddr)
 		memcpy(&client->destaddr, destaddr, sizeof(client->destaddr));
 	evtimer_set(&client->timeout, redudp_timeout, client);
-    event_base_set(global_evbase, &client->timeout);
+    event_base_set(client->instance->evbase, &client->timeout);
 	// XXX: self->relay_ss->init(client);
 
 	client->sender_fd = -1; // it's postponed until socks-server replies to avoid trivial DoS
 
-	client->relay = red_connect_relay(&client->instance->config.relayaddr,
+	client->relay = red_connect_relay(client->instance->evbase, &client->instance->config.relayaddr,
 	                                  redudp_relay_connected, redudp_relay_error, client);
 	if (!client->relay)
 		goto fail;
@@ -807,7 +807,7 @@ static int redudp_init_instance(redudp_instance *instance)
 	}
 
 	event_set(&instance->listener, fd, EV_READ | EV_PERSIST, redudp_pkt_from_client, instance);
-    event_base_set(global_evbase, &instance->listener);
+    event_base_set(instance->evbase, &instance->listener);
 	error = event_add(&instance->listener, NULL);
 	if (error) {
 		log_errno(LOG_ERR, "event_add");

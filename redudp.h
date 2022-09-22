@@ -20,6 +20,7 @@ typedef struct redudp_config_t {
 typedef struct redudp_instance_t {
 	list_head       list;
 	redudp_config   config;
+    struct event_base* evbase;
 	struct event    listener;
 	list_head       clients;
 } redudp_instance;

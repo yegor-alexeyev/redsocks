@@ -21,8 +21,8 @@ typedef struct
 } socks_proxy_t;
 
 
-int init_libredudp(struct event_base* base);
-uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback);
+int init_libredudp();
+uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback);
 
 #ifdef __cplusplus
 }

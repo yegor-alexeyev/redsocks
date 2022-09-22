@@ -51,7 +51,7 @@ uint32_t red_randui32();
 time_t redsocks_time(time_t *t);
 int redsocks_gettimeofday(struct timeval *tv);
 char *redsocks_evbuffer_readline(struct evbuffer *buf);
-struct bufferevent* red_connect_relay(struct sockaddr_in *addr, evbuffercb writecb, everrorcb errorcb, void *cbarg);
+struct bufferevent* red_connect_relay(struct event_base* evbase, struct sockaddr_in *addr, evbuffercb writecb, everrorcb errorcb, void *cbarg);
 int red_socket_geterrno(struct bufferevent *buffev);
 int red_socket_client(int type);
 int red_socket_server(int type, struct sockaddr_in *bindaddr);

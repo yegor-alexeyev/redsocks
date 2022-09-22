@@ -1,26 +1,20 @@
 #include "libredudp.hh"
 
-extern app_subsys redsocks_subsys;
-extern app_subsys debug_subsys;
+/* extern app_subsys redsocks_subsys; */
+/* extern app_subsys debug_subsys; */
 extern app_subsys base_subsys;
 extern app_subsys redudp_subsys;
-extern app_subsys dnstc_subsys;
-extern app_subsys dnsu2t_subsys;
+/* extern app_subsys dnstc_subsys; */
+/* extern app_subsys dnsu2t_subsys; */
 
 
-int init_libredudp(struct event_base* evbase)
+int init_libredudp()
 {
-  global_evbase = evbase;
+  /* global_evbase = evbase; */
 
     app_subsys *subsystems[] = {
-        &redsocks_subsys,
-#ifdef DBG_BUILD
-        &debug_subsys,
-#endif
         &base_subsys,
         &redudp_subsys,
-        &dnstc_subsys,
-        &dnsu2t_subsys,
     };
 
 	int error;
@@ -59,7 +53,7 @@ int init_libredudp(struct event_base* evbase)
     int i = 0;
 	FOREACH(ss, subsystems) {
 		if ((*ss)->init) {
-			error = (*ss)->init(evbase);
+			error = (*ss)->init();
 			if (error)
             {
               log_error(LOG_WARNING, "subsystem %d init failed\n", i);
@@ -108,7 +102,7 @@ int init_libredudp(struct event_base* evbase)
 	/* return !error ? EXIT_SUCCESS : EXIT_FAILURE; */
 }
 
-uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback)
+uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback)
 {
 	redudp_instance *instance = calloc(1, sizeof(*instance));
 	if (!instance) {
@@ -119,6 +113,8 @@ uint16_t create_udp_relay(socks_proxy_t proxy, endpoint_t destination, relay_shu
 	INIT_LIST_HEAD(&instance->list);
 	INIT_LIST_HEAD(&instance->clients);
 
+
+	instance->evbase = evbase;
 
 	instance->config.shutdown_callback = shutdown_callback;
 

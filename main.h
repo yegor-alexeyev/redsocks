@@ -6,7 +6,7 @@
 struct event_base;
 
 typedef struct app_subsys_t {
-	int (*init)(struct event_base*);
+	int (*init)();
 	int (*fini)();
 	parser_section* conf_section;
 } app_subsys;

@@ -183,7 +183,7 @@ fail:
 }
 
 
-struct bufferevent* red_connect_relay(struct sockaddr_in *addr, evbuffercb writecb, everrorcb errorcb, void *cbarg)
+struct bufferevent* red_connect_relay(struct event_base* evbase, struct sockaddr_in *addr, evbuffercb writecb, everrorcb errorcb, void *cbarg)
 {
 	struct bufferevent *retval = NULL;
 	int relay_fd = -1;
@@ -198,7 +198,7 @@ struct bufferevent* red_connect_relay(struct sockaddr_in *addr, evbuffercb write
 	}
 
 	/* retval = bufferevent_new(relay_fd, NULL, writecb, errorcb, cbarg); */
-    retval = bufferevent_socket_new(global_evbase, relay_fd, 0);
+    retval = bufferevent_socket_new(evbase, relay_fd, 0);
 
     struct timeval tv = {5, 0};
     bufferevent_set_timeouts(retval, NULL, &tv);
