@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-typedef void (*relay_shutdown_callback_t)(uint16_t);
+typedef void (*relay_shutdown_callback_t)(void* context, uint16_t);
 
 typedef struct
 {
@@ -22,7 +22,7 @@ typedef struct
 
 
 int init_libredudp();
-uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback);
+uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback, void* evbase_context);
 
 #ifdef __cplusplus
 }

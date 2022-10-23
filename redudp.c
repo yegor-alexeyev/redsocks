@@ -839,7 +839,7 @@ fail:
  */
 static void redudp_fini_instance(redudp_instance *instance)
 {
-    instance->config.shutdown_callback(ntohs(instance->config.bindaddr.sin_port));
+    instance->config.shutdown_callback(instance->config.evbase_context, ntohs(instance->config.bindaddr.sin_port));
 
 	if (!list_empty(&instance->clients)) {
 		redudp_client *tmp, *client = NULL;

@@ -102,7 +102,7 @@ int init_libredudp()
 	/* return !error ? EXIT_SUCCESS : EXIT_FAILURE; */
 }
 
-uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback)
+uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoint_t destination, relay_shutdown_callback_t shutdown_callback, void* evbase_context)
 {
 	redudp_instance *instance = calloc(1, sizeof(*instance));
 	if (!instance) {
@@ -117,6 +117,7 @@ uint16_t create_udp_relay(struct event_base* evbase, socks_proxy_t proxy, endpoi
 	instance->evbase = evbase;
 
 	instance->config.shutdown_callback = shutdown_callback;
+	instance->config.evbase_context = evbase_context;
 
 	instance->config.bindaddr.sin_family = AF_INET;
     ext_vp_in_addr(&instance->config.bindaddr.sin_addr, "0.0.0.0");
